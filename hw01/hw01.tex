@@ -1,0 +1,127 @@
+\documentclass{article}
+
+\usepackage[UTF8]{ctex}
+\usepackage{placeins}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor} % 添加 xcolor 宏包
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\lstset{ %
+language=matlab,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}
+\title{hw01}
+
+
+\begin{document}
+\maketitle
+    \section*{Q1(1)}
+    自拟数据如下：
+    \begin{table}[h]
+      \centering
+      \begin{tabular}{|c|c|c|c|c|}
+      \hline
+       & A1 & A2 & A3 & 营养成分最低需求量 \\
+      \hline
+      B1 & 2 & 3 & 1 & 15 \\
+      \hline
+      B2 & 4 & 1 & 2 & 10 \\
+      \hline
+      食品单价 & 3 & 2 & 1 &  \\
+      \hline
+      \end{tabular}
+      \caption{数据表格}
+  \end{table}
+    \begin{lstlisting}[caption={题1(1) MATLAB代码}, label={lst:matlab}]
+        n = 3; % 食品种类数
+        m = 2; % 营养成分种类数
+        a = [2 3 1; 4 1 2]; % 含量矩阵
+        b = [15; 10]; % 最低需求量向量
+        c = [3; 2; 1]; % 单价向量
+
+        % 定义优化问题
+        f = c; % 目标函数系数向量
+        A = -a; % 不等式约束左侧矩阵
+        b_ub = -b; % 不等式约束右侧向量
+        lb = zeros(n, 1); % 变量下界向量
+        intcon = 1:n; % 整数变量索引向量
+
+        % 求解优化问题
+        [x, fval] = intlinprog(f, intcon, A, b_ub, [], [], lb, []);
+        disp('最低花费：');
+        disp(fval);
+        disp('食品份数：');
+        disp(x);
+
+    \end{lstlisting}
+    Answer:
+      \[\text{最低花费:}11\]
+      \[\text{食品份数:}0, 4, 3\]
+    \section*{Q1(2)}
+      \[d_1=5, d_2=6, d_3=4\]
+      \begin{lstlisting}[caption={题1(1) MATLAB代码}, label={lst:matlab}]
+        % 手动输入数据
+        n = 3; % 食品种类数
+        m = 2; % 营养成分种类数
+        a = [2 3 1; 4 1 2]; % 含量矩阵
+        b = [15; 10]; % 最低需求量向量
+        c = [3; 2; 1]; % 单价向量
+        d = [5; 6; 4]; % 最低摄入量向量
+
+        % 定义优化问题
+        f = c; % 目标函数系数向量
+        A = -a; % 不等式约束左侧矩阵
+        b_ub = -b; % 不等式约束右侧向量
+        Aeq = ones(1, n); % 等式约束左侧矩阵
+        beq = sum(d); % 等式约束右侧向量，保证总摄入量满足要求
+        lb = zeros(n, 1); % 变量下界向量
+        intcon = 1:n; % 整数变量索引向量
+
+        % 求解优化问题
+        [x, fval] = intlinprog(f, intcon, A, b_ub, Aeq, beq, lb, []);
+        disp('最低花费：');
+        disp(fval);
+        disp('食品份数：');
+        disp(x);
+
+      \end{lstlisting}
+    Answer:
+      \[\text{最低花费：}15\]
+      \[\text{食品份数：}0, 0, 15\]
+    \section*{Q2}
+    \noindent \textbf{解:} \\
+    用\(i=1,2\)分别代表重型和轻型炸弹，\(j=1,2,3,4\)分别代表四个要害部位，\(x_{ij}\)为投到第\(j\)部位的\(i\)种型号炸弹的数量，
+    则问题的数学模型可以等价为求一个目标都不能命中的最小可能值:
+    \[\min z = {\left( {1 - 0.10} \right)^{{x_{11}}}} \cdot {\left( {1 - 0.20} \right)^{{x_{12}}}} \cdot {\left( {1 - 0.15} \right)^{{x_{13}}}} \cdot {\left( {1 - 0.25} \right)^{{x_{14}}}} \cdot {\left( {1 - 0.08} \right)^{{x_{21}}}} \cdot   \]
+    \[{\left( {1 - 0.16} \right)^{{x_{22}}}} \cdot {\left( {1 - 0.12} \right)^{{x_{23}}}} \cdot {\left( {1 - 0.20} \right)^{{x_{24}}}}\]
+    且需满足约束条件：
+    \[\left\{ {\begin{array}{*{20}{c}}
+        \begin{gathered}
+        \frac{{1.5 \cdot 450}}{2}{x_{11}} + \frac{{1.5 \cdot 480}}{2}{x_{12}} + \frac{{1.5 \cdot 540}}{2}{x_{13}} + \frac{{1.5 \cdot 600}}{2}{x_{14}} +  \hfill \\
+        \frac{{1.75 \cdot 450}}{3}{x_{21}} + \frac{{1.75 \cdot 480}}{3}{x_{22}} + \frac{{2 \cdot 540}}{3}{x_{23}} + \frac{{2 \cdot 600}}{3}{x_{24}} +  \hfill \\
+        100\left( {{x_{11}} + {x_{12}} + {x_{13}} + {x_{14}} + {x_{21}} + {x_{22}} + {x_{23}} + {x_{24}}} \right) \leqslant 48000 \hfill \\ 
+      \end{gathered}  \\ 
+        {{x_{11}} + {x_{12}} + {x_{13}} + {x_{14}} \leqslant 32} \\ 
+        {{x_{21}} + {x_{22}} + {x_{23}} + {x_{24}} \leqslant 48} \\ 
+        {\begin{array}{*{20}{c}}
+        {{x_{ij}} \geqslant 0}&{i = 1,2;j = 1, \cdots ,4} 
+      \end{array}} 
+      \end{array}} \right.\]
+
+\end{document}
